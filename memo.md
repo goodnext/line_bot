@@ -16,3 +16,9 @@ source line_bot_py/bin/activate
 ```
 deactivate
 ```
+
+### モジュールインストール
+```
+pip install beautifulsoup4
+pip install lxml
+```
