@@ -2,6 +2,7 @@ import requests
 import json
 from bs4 import BeautifulSoup
 import datetime
+import jpholiday
 
 def line_push(messeage):
 url = 'https://api.line.me/v2/bot/message/push'
@@ -38,8 +39,33 @@ def exec_scraping():
 def main():
     #対象のサイトからリンク先取得
     # menu_list = exec_scraping()
-    date = datetime.datetime(2018, 1, 1, 0, 0)
-    print(date)
+
+    
+    #現在日時のオブジェクトを取得
+    now = datetime.datetime.now()
+    #休日格納用配列
+    holiday_list = []
+    #現在年の祝日ループし取得
+    for holday in jpholiday.year_holidays(now.year): 
+        holiday_list.append(holday[0])
+
+    # 現在日取得
+    today = datetime.date.today()
+    #　現在日から10日分ループ
+    for cnt in range(1, 10):
+        cale_date = datetime.timedelta(days=cnt)
+        add_date = today + cale_date
+        #土曜日または日曜日の場合 休日の配列に格納
+        if add_date.weekday() == 5 or add_date.weekday() == 6:
+            holiday_list.append(add_date)
+    
+    #重複を削除
+    holiday_list_uniq = list(set(holiday_list))
+    #配列のソートする
+    holiday_list_uniq.sort()
+    
+
+    
 
 
     #プッシュ通知をする
