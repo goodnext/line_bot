@@ -36,11 +36,7 @@ def exec_scraping():
         menu_list.append(a.get('href'))
     return menu_list
 
-def main():
-    #対象のサイトからリンク先取得
-    # menu_list = exec_scraping()
-
-    
+def get_holiday_list():
     #現在日時のオブジェクトを取得
     now = datetime.datetime.now()
     #休日格納用配列
@@ -63,6 +59,45 @@ def main():
     holiday_list_uniq = list(set(holiday_list))
     #配列のソートする
     holiday_list_uniq.sort()
+    
+    return(holiday_list_uniq)
+
+def get_holiday_match_cnt(holiday_list_uniq):
+    #休日にマッチした件数
+    match_cnt = 0
+    #現在日取得
+    today = datetime.date.today()
+    if today in holiday_list_uniq:
+        return(match_cnt)
+    
+    #現在日から10日分ループ
+    for cnt in range(4, 10):
+        cale_date = datetime.timedelta(days=cnt)
+        # cale_date = datetime.timedelta(days=6)
+        next_date  = today + cale_date
+        #次の日付が一致した場合もう一度ループ
+        if next_date in holiday_list_uniq:
+            match_cnt += 1
+            continue
+        #一致しない場合はループぬける
+        else:
+            break
+    return(match_cnt)
+
+def main():
+    #対象のサイトからリンク先取得
+    menu_list = exec_scraping()
+    #休日のリスト取得
+    holiday_list_uniq = get_holiday_list()
+
+    match_cnt = get_holiday_match_cnt(holiday_list_uniq)
+    
+    for cnt in range(0, match_cnt):
+        print(cnt)
+        print(menu_list[cnt])
+
+    #配列にt対象の日付が存在するか確認
+    # print (datetime.date(2018,1,1) in holiday_list_uniq)
     
 
     
