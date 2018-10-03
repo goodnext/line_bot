@@ -4,6 +4,9 @@ from bs4 import BeautifulSoup
 import datetime
 import jpholiday
 
+#push通知するリンク先URL
+BASE_URL = 'https://www.weekcook.jp/menu/onemenu/dinner/'
+
 def line_push(messeage):
 url = 'https://api.line.me/v2/bot/message/push'
 
@@ -23,8 +26,7 @@ headers = {
 requests.post(url, data=json.dumps(data), headers=headers)
 
 def exec_scraping():
-    base_url = 'https://www.weekcook.jp/menu/onemenu/dinner/'
-    target_url = base_url + 'index.html'
+    target_url = BASE_URL + 'index.html'
     r = requests.get(target_url)         #requestsを使って、webから取得
     soup = BeautifulSoup(r.text, 'lxml') #html取得
 
@@ -71,7 +73,7 @@ def get_holiday_match_cnt(holiday_list_uniq):
         return(match_cnt)
     
     #現在日から10日分ループ
-    for cnt in range(4, 10):
+    for cnt in range(1, 10):
         cale_date = datetime.timedelta(days=cnt)
         # cale_date = datetime.timedelta(days=6)
         next_date  = today + cale_date
@@ -92,16 +94,10 @@ def main():
 
     match_cnt = get_holiday_match_cnt(holiday_list_uniq)
     
+    if match_cnt > 0:
+        line_push('今週の献立リスト')
     for cnt in range(0, match_cnt):
-        print(cnt)
-        print(menu_list[cnt])
-
-    #配列にt対象の日付が存在するか確認
-    # print (datetime.date(2018,1,1) in holiday_list_uniq)
-    
-
-    
-
+        line_push(BASE_URL + menu_list[cnt])
 
     #プッシュ通知をする
     # line_push("あいう\nかきく")
