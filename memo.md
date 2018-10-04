@@ -23,3 +23,14 @@ pip install beautifulsoup4
 pip install lxml
 pip install jpholiday
 ```
+
+https://devcenter.heroku.com/articles/getting-started-with-python#set-up
+ここからmacのheroku cliをインストール
+
+herokuに環境変数をセットする
+heroku config:set LINE_USER_ID=*** LINE_ACCESS_TOKEN=***
+
+モジュールをテキストにする
+pip freeze > requirements.txt
+
+

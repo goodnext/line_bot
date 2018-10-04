@@ -3,27 +3,28 @@ import json
 from bs4 import BeautifulSoup
 import datetime
 import jpholiday
+import os
 
 #push通知するリンク先URL
 BASE_URL = 'https://www.weekcook.jp/menu/onemenu/dinner/'
 
 def line_push(messeage):
-url = 'https://api.line.me/v2/bot/message/push'
+    url = 'https://api.line.me/v2/bot/message/push'
 
-data = {
-    "to": "Your user ID",
-    "messages": [
-        {
-            "type": "text",
-            "text": messeage
-        }
-    ]
-}
-headers = {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + #アクセストークン#
-}
-requests.post(url, data=json.dumps(data), headers=headers)
+    data = {
+        "to": os.environ["LINE_USER_ID"],
+        "messages": [
+            {
+                "type": "text",
+                "text": messeage
+            }
+        ]
+    }
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + os.environ["LINE_ACCESS_TOKEN"]
+    }
+    requests.post(url, data=json.dumps(data), headers=headers)
 
 def exec_scraping():
     target_url = BASE_URL + 'index.html'
@@ -61,7 +62,7 @@ def get_holiday_list():
     holiday_list_uniq = list(set(holiday_list))
     #配列のソートする
     holiday_list_uniq.sort()
-    
+
     return(holiday_list_uniq)
 
 def get_holiday_match_cnt(holiday_list_uniq):
@@ -98,9 +99,7 @@ def main():
         line_push('今週の献立リスト')
     for cnt in range(0, match_cnt):
         line_push(BASE_URL + menu_list[cnt])
-
-    #プッシュ通知をする
-    # line_push("あいう\nかきく")
+    
 
 if __name__ == "__main__":
     main()
